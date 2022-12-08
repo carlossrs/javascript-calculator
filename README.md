@@ -1,8 +1,6 @@
 ## JavaScript Calculator
 
-This is a JavaScript Calculator created for freeCodeCamp Front End Development Libraries course completition.
-
-Built With:
+This is a JavaScript Calculator Built With:
 
 - HTML
 - CSS
