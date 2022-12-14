@@ -1,6 +1,8 @@
 import React from "react";
-import "./App.css";
+import Display from "./components/Display";
+import Button from "./components/Button";
 import * as math from "mathjs";
+import { Container, Content, NumPad, Title } from "./styles";
 
 function App() {
   const numPad = [
@@ -20,20 +22,28 @@ function App() {
     { text: "-", id: "subtract" },
     { text: "*", id: "multiply" },
     { text: "/", id: "divide" },
+    { text: "DEL", id: "delete" },
     { text: "AC", id: "clear" },
   ];
-
   const [input, setInput] = React.useState(0);
 
-  function handleClick(par) {
-    switch (par) {
+  const handleClick = (pad) => {
+    switch (pad) {
+      case "DEL":
+        if (input === 0) return;
+        let splited = input.split("");
+        let result = "";
+        result = splited.splice(0, splited.length - 1).join("");
+        if (result.length === 0) return setInput(0);
+        setInput(result);
+        break;
       case "AC":
         setInput(0);
         break;
       case ".":
         let separated = input.toString().split(/[\*\-\+\/]+/);
         if (separated[separated.length - 1].includes(".")) return;
-        setInput(input + "" + par);
+        setInput(input + "" + pad);
         break;
       case "+":
         let splitedSum = "";
@@ -56,11 +66,11 @@ function App() {
               i = splitedSum.length;
             } else i = 0;
           }
-          splitedSum.push(par);
+          splitedSum.push(pad);
           resultSum = splitedSum.join("");
           return setInput(resultSum);
         }
-        setInput(input + par);
+        setInput(input + pad);
         break;
       case "*":
         let splitedMul = "";
@@ -83,11 +93,11 @@ function App() {
               i = splitedMul.length;
             } else i = 0;
           }
-          splitedMul.push(par);
+          splitedMul.push(pad);
           resultMul = splitedMul.join("");
           return setInput(resultMul);
         }
-        setInput(input + par);
+        setInput(input + pad);
         break;
       case "/":
         let splitedDiv = "";
@@ -110,50 +120,41 @@ function App() {
               i = splitedDiv.length;
             } else i = 0;
           }
-          splitedDiv.push(par);
+          splitedDiv.push(pad);
           resultDiv = splitedDiv.join("");
           return setInput(resultDiv);
         }
-        setInput(input + par);
+        setInput(input + pad);
         break;
       case "-":
-        setInput(input + "" + par);
+        setInput(input + "" + pad);
         break;
       case "=":
-        setInput(math.round(math.evaluate(input), 4));
+        setInput(math.round(math.evaluate(input), 4).toString());
         break;
       default:
         if (input === 0) {
-          setInput(par);
-        } else setInput(input + "" + par);
+          setInput(pad);
+        } else setInput(input + "" + pad);
     }
-  }
-
+  };
   return (
-    <div className="App">
-      <div className="calculator">
-        <h2 className="title">CALCULATOR</h2>
-        <div id="screen">
-          <span id="display" className="input" input={input}>
-            {input}
-          </span>
-        </div>
-        <div id="num-pad">
+    <Container>
+      <Content>
+        <Title />
+        <Display value={input} />
+        <NumPad>
           {numPad.map((button) => (
-            <button
-              className="button"
-              id={button.id}
+            <Button
               key={button.id}
-              onClick={() => {
-                handleClick(button.text);
-              }}
-            >
-              {button.text}
-            </button>
+              text={button.text}
+              id={button.id}
+              onClick={() => handleClick(button.text)}
+            />
           ))}
-        </div>
-      </div>
-    </div>
+        </NumPad>
+      </Content>
+    </Container>
   );
 }
 
